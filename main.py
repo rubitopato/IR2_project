@@ -14,11 +14,16 @@ sim = RoboboSim("localhost")
 sim.connect()
 rob.connect()
 
-rob.playNote(62, 0.08, wait=True)
-time.sleep(0.1)
+rob.playNote(59, 0.08, wait=True)
+time.sleep(0.05)
+rob.playNote(64, 0.08, wait=True)
+time.sleep(0.05)
 rob.playNote(69, 0.08, wait=True)
-time.sleep(0.1)
-rob.playNote(74, 0.08, wait=True)
+
+# time.sleep(0.7)
+# rob.playNote(69, 0.18, wait=True)
+# time.sleep(0.12)
+# rob.playNote(69, 0.18, wait=True)
 
 rob.setEmotionTo(Emotions.ANGRY)  #DO NOT TOUCH THIS LINE
 rob.moveTiltTo(100,50)
