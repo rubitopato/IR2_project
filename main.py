@@ -4,9 +4,9 @@ from robobosim.RoboboSim import RoboboSim
 from robobopy.utils.Emotions import Emotions
 from perceptual_space import get_perceptual_state, get_perceptual_state_limited
 from action_space import perform_random_action_freely, perform_random_action_limited
-from utils import get_cylinders_initial_pos, move_cylinder, reset_position_cylinders
+from utils import get_cylinders_initial_pos, move_cylinder, reset_position_cylinders, save_new_line_of_data, avoid_obstacle
 import time
-import random
+from robobopy.utils.IR import IR
 
 ## Initialization of the robot
 rob = Robobo("localhost")
@@ -14,41 +14,35 @@ sim = RoboboSim("localhost")
 sim.connect()
 rob.connect()
 
-rob.playNote(59, 0.08, wait=True)
-time.sleep(0.05)
-rob.playNote(64, 0.08, wait=True)
-time.sleep(0.05)
-rob.playNote(69, 0.08, wait=True)
-
-# time.sleep(0.7)
-# rob.playNote(69, 0.18, wait=True)
-# time.sleep(0.12)
-# rob.playNote(69, 0.18, wait=True)
-
 rob.setEmotionTo(Emotions.ANGRY)  #DO NOT TOUCH THIS LINE
 rob.moveTiltTo(100,50)
 
-## Testing the movement of the cylinders
-objects = sim.getObjects()
-cylinders_initial_pos = get_cylinders_initial_pos(sim, objects)
+i = 0
+j = 0
+while i < 5:
+    
+    while j < 50:
+        if rob.readIRSensor(IR.FrontC) > 60 or rob.readIRSensor(IR.BackC) > 85:
+            print("avoiding obstacle")
+            avoid_obstacle(rob, rob.readIRSensor(IR.FrontC), rob.readIRSensor(IR.BackC))
+            rob.wait(1)
+        else:
+            perception_init = get_perceptual_state_limited(sim)
+            r, l = perform_random_action_freely(rob)
+            perception_final = get_perceptual_state_limited(sim)
+            save_new_line_of_data(perception_init, r, l, perception_final)
+            j += 1
+            rob.wait(0.1)
+            
+    objects = sim.getObjects()
+    cylinders_initial_pos = get_cylinders_initial_pos(sim, objects)
 
-for i in range(10):
-    cylinder_name = random.choice(list(cylinders_initial_pos.keys()))
-    print("Moving cylinder:", cylinder_name)
-    move_cylinder(sim, cylinder_name)
-    time.sleep(1)
-
-reset_position_cylinders(sim, cylinders_initial_pos)
-
-## Execution of the robot
-# get_perceptual_state_limited(sim)
-
-# i = 0
-# while i < 100:
-#     get_perceptual_state_limited(sim)
-#     r, l = perform_random_action_freely(rob)
-#     print(r, l)
-#     i += 1
+    for cylinder_name in cylinders_initial_pos.keys():
+        move_cylinder(sim, cylinder_name)
+        time.sleep(1)
+        
+    i += 1
+    j = 0
  
 rob.disconnect()
 sim.disconnect()
