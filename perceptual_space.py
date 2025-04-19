@@ -64,5 +64,5 @@ def get_perceptual_state_limited(sim):
         'distance_green': distance_green, 
         'angle': angulo_deg_green
     }
-    print(perceptions_limited)
+    #print(perceptions_limited)
     
