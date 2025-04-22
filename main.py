@@ -19,7 +19,14 @@ rob.moveTiltTo(100,50)
 
 i = 0
 j = 0
-while i < 5:
+while i < 8:
+    
+    objects = sim.getObjects()
+    cylinders_initial_pos = get_cylinders_initial_pos(sim, objects)
+
+    for cylinder_name in cylinders_initial_pos.keys():
+        move_cylinder(sim, cylinder_name)
+        time.sleep(1)
     
     while j < 50:
         if rob.readIRSensor(IR.FrontC) > 60 or rob.readIRSensor(IR.BackC) > 85:
@@ -33,13 +40,6 @@ while i < 5:
             save_new_line_of_data(perception_init, r, l, perception_final)
             j += 1
             rob.wait(0.1)
-            
-    objects = sim.getObjects()
-    cylinders_initial_pos = get_cylinders_initial_pos(sim, objects)
-
-    for cylinder_name in cylinders_initial_pos.keys():
-        move_cylinder(sim, cylinder_name)
-        time.sleep(1)
         
     i += 1
     j = 0
