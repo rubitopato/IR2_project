@@ -22,3 +22,16 @@ def perform_random_action_limited(rob):
         rSpeed, lSpeed = 0, 30
     rob.moveWheelsByTime(rSpeed, lSpeed, 1, wait=True)
     return rSpeed, lSpeed
+
+def generate_all_possible_actions(min_speed: int = -30, max_speed: int = 30):
+    """
+    Generates a list of ALL possible integer action combinations.
+    WARNING: This can be a very large list (e.g., 3721 actions for -30 to 30)
+             and likely too slow for practical use in the main loop.
+    """
+    all_actions = []
+    for rSpeed in range(min_speed, max_speed + 1):
+        for lSpeed in range(min_speed, max_speed + 1):
+            all_actions.append((rSpeed, lSpeed))
+    #print(f"Generated {len(all_actions)} total possible actions.")
+    return all_actions
