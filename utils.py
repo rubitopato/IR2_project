@@ -103,7 +103,7 @@ def predict_next_perceptual_state(current_perception, action, model, scaler):
         return None
 
 # --- Novelty Calculation Function ---
-def calculate_novelty(predicted_state, memory, n=1):
+def get_intrinsinc_utility_from_state(predicted_state, memory, n=1):
     """
     Calculates the novelty of a predicted state based on past states in memory.
 
@@ -158,3 +158,14 @@ def calculate_novelty(predicted_state, memory, n=1):
     except Exception as e:
         print(f"Error during novelty calculation: {e}")
         return 0.0 # Return low novelty on error
+    
+def objective_found(perception: dict):   
+    distance_red = perception.get('distance_red')
+    return distance_red < 50
+
+def get_array_from_perceptual_dict(perception: dict):
+    return [
+        perception.get('distance_red', 0), perception.get('angle_red', 0),
+        perception.get('distance_green', 0), perception.get('angle_green', 0),
+        perception.get('distance_blue', 0), perception.get('angle_blue', 0)
+    ]
