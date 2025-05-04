@@ -3,7 +3,7 @@ from robobopy.utils.BlobColor import BlobColor
 from robobosim.RoboboSim import RoboboSim
 from robobopy.utils.Emotions import Emotions
 from perceptual_space import get_perceptual_state, get_perceptual_state_limited
-from action_space import perform_random_action_freely, perform_random_action_limited
+from action_space import perform_random_action_freely, perform_random_action_limited, reset_randomize_positions
 from utils import get_cylinders_initial_pos, move_cylinder, reset_position_cylinders, save_new_line_of_data, avoid_obstacle
 import time
 from robobopy.utils.IR import IR
@@ -18,7 +18,18 @@ rob.connect()
 rob.setEmotionTo(Emotions.ANGRY)  #DO NOT TOUCH THIS LINE
 rob.moveTiltTo(100,50)
 
-test_world_model(rob, sim)
+#Loop for randomize positions
+# print("RED: ", sim.getObjectLocation('REDCYLINDER'))
+# print("GREEN: ", sim.getObjectLocation('GREENCYLINDER'))
+# print("BLUE: ", sim.getObjectLocation('BLUECYLINDER'))
+# print("YELLOW: ", sim.getObjectLocation('CUSTOMCYLINDER'))
+cylinder_names= ['REDCYLINDER', 'GREENCYLINDER', 'BLUECYLINDER', 'CUSTOMCYLINDER'] # Determine the cylinders position
+for i in range(15):
+    reset_randomize_positions(sim, cylinder_names)
+    time.sleep(1)
+
+
+#test_world_model(rob, sim)
 
 # i = 0
 # j = 0

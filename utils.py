@@ -20,7 +20,6 @@ def get_cylinders_initial_pos(sim, objects):
         'BLUECYLINDER': None,
         'CUSTOMCYLINDER': None
     }
-
     if objects != None and len(objects) > 0:
         for object in objects:
             location = sim.getObjectLocation(object)
