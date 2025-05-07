@@ -4,7 +4,7 @@ from robobosim.RoboboSim import RoboboSim
 from robobopy.utils.Emotions import Emotions
 from perceptual_space import get_perceptual_state, get_perceptual_state_limited
 from action_space import perform_random_action_freely, perform_random_action_limited, reset_randomize_positions
-from utils import get_cylinders_initial_pos, move_cylinder, reset_position_cylinders, save_new_line_of_data, avoid_obstacle
+from utils import get_cylinders_initial_pos, move_cylinder, reset_position_cylinders, obtain_position_cylinders, save_new_line_of_data, avoid_obstacle
 import time
 from robobopy.utils.IR import IR
 from test_word_model import test_world_model
@@ -18,15 +18,25 @@ rob.connect()
 rob.setEmotionTo(Emotions.ANGRY)  #DO NOT TOUCH THIS LINE
 rob.moveTiltTo(100,50)
 
+
+#Initial state
+cylinder_names = ['REDCYLINDER', 'GREENCYLINDER', 'BLUECYLINDER', 'CUSTOMCYLINDER'] # Determine the cylinders position
+print("\n================= INITIAL STATE: =================\n")
+obtain_position_cylinders(sim, cylinder_names)
+
 #Loop for randomize positions
-# print("RED: ", sim.getObjectLocation('REDCYLINDER'))
-# print("GREEN: ", sim.getObjectLocation('GREENCYLINDER'))
-# print("BLUE: ", sim.getObjectLocation('BLUECYLINDER'))
-# print("YELLOW: ", sim.getObjectLocation('CUSTOMCYLINDER'))
-cylinder_names= ['REDCYLINDER', 'GREENCYLINDER', 'BLUECYLINDER', 'CUSTOMCYLINDER'] # Determine the cylinders position
-for i in range(15):
-    reset_randomize_positions(sim, cylinder_names)
+for i in range(1):
+    reset_randomize_positions(rob, sim, cylinder_names)
     time.sleep(1)
+    print(f"\n========= Step {i+1}: =========\n")
+    obtain_position_cylinders(sim, cylinder_names)
+
+print("\n================= FINAL STATE: =================\n")
+obtain_position_cylinders(sim, cylinder_names)
+
+
+time.sleep(1)
+rob.moveWheelsByTime(-6, 21, 1, wait=True)
 
 
 #test_world_model(rob, sim)

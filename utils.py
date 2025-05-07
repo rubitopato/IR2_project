@@ -40,6 +40,11 @@ def move_cylinder(sim, cylinder_name):  # Move the cylinder +50 in the X axis (t
 def reset_position_cylinders(sim, cylinders_initial_pos):
     for cylinder_name, initial_position in cylinders_initial_pos.items():
         sim.setObjectLocation(cylinder_name, initial_position)
+
+def obtain_position_cylinders(sim, cylinder_names):
+    for cylinder_name in cylinder_names:
+        print(f"LOCATION {cylinder_name}: {sim.getObjectLocation(cylinder_name)}")
+
         
 def save_new_line_of_data(perception_init, rSpeed, lSpeed, perception_final):
     line = f'{perception_init["distance_red"]},{perception_init["angle_red"]},{perception_init["distance_green"]},{perception_init["angle_green"]},'
