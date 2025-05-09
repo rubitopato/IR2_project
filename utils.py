@@ -49,7 +49,7 @@ def save_new_line_of_data(perception_init, rSpeed, lSpeed, perception_final):
     line += f'{perception_init["distance_blue"]},{perception_init["angle_blue"]},{rSpeed},{lSpeed},'
     line += f'{perception_final["distance_red"]},{perception_final["angle_red"]},{perception_final["distance_green"]},{perception_final["angle_green"]},'
     line += f'{perception_final["distance_blue"]},{perception_final["angle_blue"]}'
-    with open("dataset/dataset_limited.txt", "a") as archivo:
+    with open("dataset/new_dataset3.txt", "a") as archivo:
         archivo.write(f"\n{line}")
 
 # --- World Model Prediction Function ---
@@ -169,9 +169,17 @@ def novelty_score(predicted_state, memory, n=1):
         print(f"Error during novelty calculation: {e}")
         return 0.0 # Return low novelty on error
     
-def objective_found(perception: dict):   
-    distance_red = perception.get('distance_red')
-    return distance_red < 200
+def objective_found(perceptions: list[dict]):
+    distances, indexs = [], []
+    for i, perception in enumerate(perceptions):   
+        distance_red = perception.get('distance_red')
+        angle_red = perception.get('angle_red')
+        if (distance_red < 30):
+            distances.append(distance_red)
+            indexs.append(i)
+    if len(distances) > 0:
+        return True, indexs[distances.index(min(distances))]
+    return False, None
 
 def get_array_from_perceptual_dict(perception: dict):
     return [
@@ -315,12 +323,6 @@ def generate_random_position(y, existing_positions, min_dist=120):
 def reset_randomize_positions(sim, object_names, min_dist=120):
     used_positions = []
     #Reset robot
-    robot_loc = sim.getRobotLocation(0)
-    robot_pos = robot_loc['position']
-    robot_y = robot_pos['y']
-    new_pos = generate_random_position(robot_y, used_positions, min_dist=min_dist)
-    used_positions.append(new_pos)
-    sim.setRobotLocation(0, new_pos, {"x": 0.0, "y": 0.0, "z": 0.0})
 
     #Reset cylinders
     for obj_name in object_names:

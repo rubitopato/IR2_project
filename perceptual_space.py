@@ -39,30 +39,63 @@ def get_perceptual_state(rob):
     rob.stopMotors()
     print(perceptions)
     
+# def get_perceptual_state_limited(sim):
+#     robot_position = sim.getRobotLocation(0)['position']
+#     red_cylinder_position = sim.getObjectLocation('REDCYLINDER')['position']
+#     blue_cylinder_position = sim.getObjectLocation('BLUECYLINDER')['position']
+#     green_cylinder_position = sim.getObjectLocation('GREENCYLINDER')['position']
+    
+#     distance_red = math.hypot(red_cylinder_position['x'] - robot_position['x'], red_cylinder_position['z'] - robot_position['z'])
+#     distance_blue = math.hypot(blue_cylinder_position['x'] - robot_position['x'], blue_cylinder_position['z'] - robot_position['z'])
+#     distance_green = math.hypot(green_cylinder_position['x'] - robot_position['x'], green_cylinder_position['z'] - robot_position['z'])
+    
+#     angulo_rad_red = math.atan2(red_cylinder_position['z'] - robot_position['z'], red_cylinder_position['x'] - robot_position['x'])
+#     angulo_deg_red = math.degrees(angulo_rad_red)
+#     angulo_rad_blue = math.atan2(blue_cylinder_position['z'] - robot_position['z'], blue_cylinder_position['x'] - robot_position['x'])
+#     angulo_deg_blue = math.degrees(angulo_rad_blue)
+#     angulo_rad_green = math.atan2(green_cylinder_position['z'] - robot_position['z'], green_cylinder_position['x'] - robot_position['x'])
+#     angulo_deg_green = math.degrees(angulo_rad_green)
+
+#     perceptions_limited = {
+#         'distance_red': distance_red, 
+#         'angle_red': angulo_deg_red,
+#         'distance_green': distance_green, 
+#         'angle_green': angulo_deg_green,
+#         'distance_blue': distance_blue, 
+#         'angle_blue': angulo_deg_blue
+#     }
+#     return perceptions_limited
+
+def get_distance_and_relative_angle(obj_pos, robot_pos, robot_yaw):
+    dx = obj_pos['x'] - robot_pos['x']
+    dz = obj_pos['z'] - robot_pos['z']
+    distance = math.hypot(dx, dz)
+    angle_rad = math.atan2(dz, dx)
+    angle_deg = math.degrees(angle_rad)
+    # Convertir a ángulo relativo al frente del robot (que mira al eje Z+)
+    angle_relative = angle_deg + robot_yaw - 90  # +90 porque atan2 usa X como 0°
+    angle_relative = angle_relative % 360
+    return distance, angle_relative    
+    
 def get_perceptual_state_limited(sim):
+    robot_info = sim.getRobotLocation(0)
+    robot_yaw = robot_info['rotation']['y']      
     robot_position = sim.getRobotLocation(0)['position']
     red_cylinder_position = sim.getObjectLocation('REDCYLINDER')['position']
     blue_cylinder_position = sim.getObjectLocation('BLUECYLINDER')['position']
     green_cylinder_position = sim.getObjectLocation('GREENCYLINDER')['position']
     
-    distance_red = math.hypot(red_cylinder_position['x'] - robot_position['x'], red_cylinder_position['z'] - robot_position['z'])
-    distance_blue = math.hypot(blue_cylinder_position['x'] - robot_position['x'], blue_cylinder_position['z'] - robot_position['z'])
-    distance_green = math.hypot(green_cylinder_position['x'] - robot_position['x'], green_cylinder_position['z'] - robot_position['z'])
-    
-    angulo_rad_red = math.atan2(red_cylinder_position['z'] - robot_position['z'], red_cylinder_position['x'] - robot_position['x'])
-    angulo_deg_red = math.degrees(angulo_rad_red)
-    angulo_rad_blue = math.atan2(blue_cylinder_position['z'] - robot_position['z'], blue_cylinder_position['x'] - robot_position['x'])
-    angulo_deg_blue = math.degrees(angulo_rad_blue)
-    angulo_rad_green = math.atan2(green_cylinder_position['z'] - robot_position['z'], green_cylinder_position['x'] - robot_position['x'])
-    angulo_deg_green = math.degrees(angulo_rad_green)
+    distance_red, angle_red = get_distance_and_relative_angle(red_cylinder_position, robot_position, robot_yaw)
+    distance_blue, angle_blue = get_distance_and_relative_angle(blue_cylinder_position, robot_position, robot_yaw)
+    distance_green, angle_green = get_distance_and_relative_angle(green_cylinder_position, robot_position, robot_yaw)
 
     perceptions_limited = {
         'distance_red': distance_red, 
-        'angle_red': angulo_deg_red,
+        'angle_red': angle_red,
         'distance_green': distance_green, 
-        'angle_green': angulo_deg_green,
+        'angle_green': angle_green,
         'distance_blue': distance_blue, 
-        'angle_blue': angulo_deg_blue
+        'angle_blue': angle_blue
     }
     return perceptions_limited
     
