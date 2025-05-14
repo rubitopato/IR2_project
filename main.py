@@ -18,7 +18,8 @@ rob.connect()
 rob.setEmotionTo(Emotions.ANGRY)  #DO NOT TOUCH THIS LINE
 rob.moveTiltTo(100,50)
 
-test_world_model(rob, sim)
+for _ in range(20):
+    test_world_model(rob, sim)
 
 # i = 0
 # j = 0

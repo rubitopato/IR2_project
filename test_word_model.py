@@ -22,8 +22,8 @@ def get_possible_action(under_limit: int, upper_limit: int):
     return rSpeed, lSpeed
 
 def test_world_model(rob, sim):
-    world_model = load_world_model("src/models/world_model_v3.joblib")
-    scaler = load_scaler("src/models/scaler_v3.joblib")
+    world_model = load_world_model("src/models/xgb_world_model_v7.joblib")
+    scaler = load_scaler("src/models/xgb_scaler_v7.joblib")
     rSpeed, lSpeed = get_possible_action(-30, 30)
     initial_perception = get_perceptual_state_limited(sim)
     predicted_perception = predict_next_perceptual_state(initial_perception, (rSpeed, lSpeed), world_model, scaler)
